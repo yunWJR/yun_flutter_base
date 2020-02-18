@@ -1,15 +1,26 @@
 name: yun_base
 description: flutter base uils for app by yun
+author: yun(wangjr@mail.tsinghua.edu.cn)
+homepage: https://github.com/yunWJR/yun_flutter_base
 version: 0.0.1
-author:
-homepage:
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.3.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
+
+  # Widgets
+  flutter_datetime_picker: any
+  fluttertoast: any
+
+  # tool
+  intl: any
+  dio: any
+  provider: any
+
+  shared_preferences: any
 
 dev_dependencies:
   flutter_test:
