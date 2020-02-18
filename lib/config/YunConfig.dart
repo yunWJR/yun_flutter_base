@@ -5,10 +5,10 @@
 import 'dart:io';
 
 /// 主题模式：0-根据系统判断；1-全部 iOS；2-全部 Material
-enum ThemeMode { AUTO, IOS, MATERIAL }
+enum YunThemeMode { AUTO, IOS, MATERIAL }
 
 /// 开启模式：根据环境决定；一直开启；一直关闭
-enum OnMode { PROP_MODEL, ON, OFF }
+enum YunOnMode { PROP_MODEL, ON, OFF }
 
 class YunConfig {
   // region 基础配置
@@ -20,44 +20,44 @@ class YunConfig {
 
   // region 功能模式配置
 
-  static OnMode logOnMode = OnMode.PROP_MODEL;
+  static YunOnMode logOnMode = YunOnMode.PROP_MODEL;
 
   static bool logOn() {
-    if (logOnMode == OnMode.PROP_MODEL) {
+    if (logOnMode == YunOnMode.PROP_MODEL) {
       return !isProp;
     }
 
-    return logOnMode == OnMode.ON;
+    return logOnMode == YunOnMode.ON;
   }
 
-  static OnMode detailsErrorMode = OnMode.PROP_MODEL;
+  static YunOnMode detailsErrorMode = YunOnMode.PROP_MODEL;
 
   static bool detailsError() {
-    if (detailsErrorMode == OnMode.PROP_MODEL) {
+    if (detailsErrorMode == YunOnMode.PROP_MODEL) {
       return !isProp;
     }
 
-    return detailsErrorMode == OnMode.ON;
+    return detailsErrorMode == YunOnMode.ON;
   }
 
-  static ThemeMode themeMode = ThemeMode.IOS;
+  static YunThemeMode themeMode = YunThemeMode.IOS;
 
   /// 使用 iOS 模式
   static bool iOSMode() {
-    if (themeMode == ThemeMode.AUTO) {
+    if (themeMode == YunThemeMode.AUTO) {
       return Platform.isIOS;
     }
 
-    return themeMode == ThemeMode.IOS;
+    return themeMode == YunThemeMode.IOS;
   }
 
   /// 使用 MATERIAL 模式
   static bool materialMode() {
-    if (themeMode == ThemeMode.AUTO) {
+    if (themeMode == YunThemeMode.AUTO) {
       return Platform.isAndroid;
     }
 
-    return themeMode == ThemeMode.MATERIAL;
+    return themeMode == YunThemeMode.MATERIAL;
   }
 
 // endregion
