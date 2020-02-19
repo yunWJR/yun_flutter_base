@@ -3,7 +3,7 @@
 //
 
 import 'package:flutter/cupertino.dart';
-import 'package:yun_base/config/YunConfig.dart';
+import 'package:yun_base/config/yun_config.dart';
 
 class YunAction {
   static Future<int> showAction(

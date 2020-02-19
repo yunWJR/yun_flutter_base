@@ -4,7 +4,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:yun_base/alert/YunAlert.dart';
+import 'package:yun_base/alert/yun_alert.dart';
 
 /// 页面状态：
 enum PageStatus { none, loading, loaded, error }

@@ -3,10 +3,10 @@
 //
 
 import 'package:dio/dio.dart';
-import 'package:yun_base/log/YunLog.dart';
-import 'package:yun_base/model/YunBaseModel.dart';
-import 'package:yun_base/model/YunPageBaseNotiModel.dart';
-import 'package:yun_base/model/YunRstData.dart';
+import 'package:yun_base/log/yun_log.dart';
+import 'package:yun_base/model/yun_base_model.dart';
+import 'package:yun_base/model/yun_page_base_noti_model.dart';
+import 'package:yun_base/model/yun_rst_data.dart';
 
 class YunHttp<N extends YunPageBaseNotiModel> {
   // region static

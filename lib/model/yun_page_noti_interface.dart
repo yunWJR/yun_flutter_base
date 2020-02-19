@@ -4,8 +4,8 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
+import 'package:yun_base/model/yun_page_base_noti_model.dart';
 
-import 'YunPageBaseNotiModel.dart';
 
 abstract class YunPageNotiInterface<T extends YunPageBaseNotiModel> {
   // todo 不起作用

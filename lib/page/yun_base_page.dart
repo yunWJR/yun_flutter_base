@@ -6,7 +6,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:yun_base/model/YunPageBaseNotiModel.dart';
+import 'package:yun_base/model/yun_page_base_noti_model.dart';
 
 typedef pageConfig = YunBasePageConfig Function();
 

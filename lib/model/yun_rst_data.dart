@@ -2,11 +2,11 @@
 // Created by yun on 2020-02-18.
 //
 
-import 'package:yun_base/util/YunValue.dart';
+import 'package:yun_base/config/yun_config.dart';
+import 'package:yun_base/model/yun_base_model.dart';
+import 'package:yun_base/util/yun_value.dart';
 
-import 'YunBaseModel.dart';
-
-/// 数据类型：1-HTTP状态数据;2-业务数据;
+/// 数据类型：业务数据;HTTP状态数据;
 enum YunRspDataType { BaseModel, HTTP }
 
 class YunRstDataDefine {
@@ -125,6 +125,17 @@ class YunRspData<T extends YunBaseModel> {
 
   bool isSuc() {
     return code == YunRstDataDefine.sucCode;
+  }
+
+  String getErrMsg() {
+    if (YunConfig.detailsError()) {
+      String typeStr = type == YunRspDataType.BaseModel ? "业务错误" : "网络错误";
+
+      String err = "${typeStr}:${errorMsg}.\n 源数据：${orgData}";
+      return err;
+    } else {
+      return errorMsg;
+    }
   }
 
   YunRspData<T> _updateError(int code, String errorMsg, {orgData}) {
