@@ -31,7 +31,23 @@ class YunRspData<T extends YunBaseModel> {
 
   YunRspData({this.type: YunRspDataType.BaseModel});
 
-  factory YunRspData.fromJson(T d, Map<String, dynamic> map) {
+  factory YunRspData.fromJson(T d, Map<String, dynamic> map, bool rspIsYunBaseModel) {
+    if (rspIsYunBaseModel) {
+      return YunRspData.fromJsonByBaseModel(d, map);
+    } else {
+      return YunRspData.fromJsonByRsp(d, map);
+    }
+  }
+
+  factory YunRspData.fromListJson(T d, Map<String, dynamic> map, bool rspIsYunBaseModel) {
+    if (rspIsYunBaseModel) {
+      return YunRspData.fromListJsonByBaseModel(d, map);
+    } else {
+      return YunRspData.fromListJsonByRsp(d, map);
+    }
+  }
+
+  factory YunRspData.fromJsonByRsp(T d, Map<String, dynamic> map) {
     var item = new YunRspData<T>(type: YunRspDataType.BaseModel);
 
     try {
@@ -62,7 +78,20 @@ class YunRspData<T extends YunBaseModel> {
     return item;
   }
 
-  factory YunRspData.fromListJson(T d, Map<String, dynamic> map) {
+  factory YunRspData.fromJsonByBaseModel(T d, Map<String, dynamic> map) {
+    var item = new YunRspData<T>(type: YunRspDataType.BaseModel);
+
+    try {
+      item.data = d.fromJson(map);
+      item.code = YunRstDataDefine.sucCode;
+    } catch (e) {
+      return item._updateError(YunRstDataDefine.commonErrorCode, e.toString(), orgData: e);
+    }
+
+    return item;
+  }
+
+  factory YunRspData.fromListJsonByRsp(T d, Map<String, dynamic> map) {
     var item = new YunRspData<T>(type: YunRspDataType.BaseModel);
 
     try {
@@ -88,6 +117,22 @@ class YunRspData<T extends YunBaseModel> {
       item.orgData = list;
 
       item.dataList = list.map<T>((e) => d.fromJson(e)).toList();
+    } catch (e) {
+      return item._updateError(YunRstDataDefine.commonErrorCode, e.toString(), orgData: e);
+    }
+
+    return item;
+  }
+
+  factory YunRspData.fromListJsonByBaseModel(T d, Map<String, dynamic> map) {
+    var item = new YunRspData<T>(type: YunRspDataType.BaseModel);
+
+    try {
+      List list = map as List;
+      List<T> vo = list.map<T>((e) => d.fromJson(e)).toList();
+
+      item.dataList = vo;
+      item.code = YunRstDataDefine.sucCode;
     } catch (e) {
       return item._updateError(YunRstDataDefine.commonErrorCode, e.toString(), orgData: e);
     }
