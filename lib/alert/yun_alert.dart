@@ -10,20 +10,20 @@ import 'package:yun_base/model/yun_rst_data.dart';
 
 enum YunHandleRstType { Close }
 
-typedef YunRspErrHandle = void Function(YunRspData data);
+typedef YunRspErrHandle = void Function(dynamic org, YunRspData data);
 
 typedef YunHandleRst = void Function(YunHandleRstType rst);
 
 class YunAlert {
   static YunRspErrHandle rspErrHandle;
 
-  static void showRspErr(BuildContext context, YunRspData data) {
+  static void showRspErr(BuildContext context, YunRspData data, dynamic org) {
     String err = data.getErrMsg();
 
     showErr(context, err ?? "未知错误", handle: (rst) {
       if (rst == YunHandleRstType.Close) {
         if (rspErrHandle != null) {
-          rspErrHandle(data);
+          rspErrHandle(org, data);
         }
       }
     });
@@ -39,7 +39,7 @@ class YunAlert {
   }
 
   static void showIOSErr(BuildContext context, String error, {YunHandleRst handle}) {
-    YunLog.log("ERROR", error);
+    YunLog.log("SHOW ERROR", error);
 
     showDialog<bool>(
       context: context,
@@ -55,11 +55,12 @@ class YunAlert {
             FlatButton(
               child: Text("确定"),
               onPressed: () {
-                //关闭对话框并返回true
-                Navigator.of(context).pop(true);
                 if (handle != null) {
                   handle(YunHandleRstType.Close);
                 }
+
+                //关闭对话框并返回true
+                Navigator.of(context).pop(true);
               },
             ),
           ],

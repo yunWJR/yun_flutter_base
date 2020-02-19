@@ -5,6 +5,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:yun_base/alert/yun_alert.dart';
+import 'package:yun_base/model/yun_rst_data.dart';
+import 'package:yun_base/page/yun_base_page.dart';
 
 /// 页面状态：
 enum PageStatus { none, loading, loaded, error }
@@ -18,6 +20,8 @@ abstract class YunPageBaseNotiModel with ChangeNotifier {
   String loadText;
 
   BuildContext _context;
+
+  YunPageNavigatorOn nagOn;
 
   YunPageBaseNotiModel(BuildContext context, {bool initLoadData = true}) {
     this._context = context;
@@ -62,6 +66,13 @@ abstract class YunPageBaseNotiModel with ChangeNotifier {
     notifyListeners();
   }
 
+  void showRspErr(YunRspData rst) {
+    // 隐藏加载
+    finishLoading();
+
+    YunAlert.showRspErr(_context, rst, this);
+  }
+
   void showErr(String error) {
     // 隐藏加载
     finishLoading();
@@ -82,5 +93,15 @@ abstract class YunPageBaseNotiModel with ChangeNotifier {
     }
 
     return can;
+  }
+
+  bool pageNagOn(String route, bool remove) {
+    if (nagOn != null) {
+      nagOn(route, remove);
+
+      return true;
+    }
+
+    return false;
   }
 }

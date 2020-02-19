@@ -10,6 +10,8 @@ import 'package:yun_base/model/yun_page_base_noti_model.dart';
 
 typedef pageConfig = YunBasePageConfig Function();
 
+typedef YunPageNavigatorOn = Function(String route, bool remove);
+
 class YunBasePageConfig {
   static YunBasePageConfig _defConfig = new YunBasePageConfig();
 
@@ -31,6 +33,8 @@ class YunBasePage<T extends YunPageBaseNotiModel> extends StatelessWidget {
   final Widget body;
 
   T model;
+
+  BuildContext context1;
 
   YunBasePageConfig config;
 
@@ -57,6 +61,8 @@ class YunBasePage<T extends YunPageBaseNotiModel> extends StatelessWidget {
     // 主动监听 model 改变
 //    model = Provider.of<T>(context, listen: true);
 
+    context1 = context;
+
     List<Widget> widgets = new List();
 
     // 载入 body
@@ -68,9 +74,24 @@ class YunBasePage<T extends YunPageBaseNotiModel> extends StatelessWidget {
       child: loadingWidget(model),
     ));
 
+    // 注册 nagOn
+    model.nagOn = (String route, bool remove) {
+      _nagOn(route, remove);
+    };
+
     // TODO 载入其他控件
 
     return new Stack(children: widgets);
+  }
+
+  void _nagOn(String route, bool remove) async {
+    await Future.delayed(Duration.zero);
+
+    if (remove != null && remove) {
+      Navigator.pushNamedAndRemoveUntil(context1, route, (Route<dynamic> route) => false);
+    } else {
+      Navigator.pushNamed(context1, route);
+    }
   }
 
   Widget loadingWidget(T model) {

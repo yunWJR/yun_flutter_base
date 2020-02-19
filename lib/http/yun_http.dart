@@ -143,8 +143,9 @@ class YunHttp<N extends YunPageBaseNotiModel> {
 
     YunLog.logRstData(rst);
 
-    // 根据模式显示信息
-    showError(rst.errorMsg);
+    if (_noti != null) {
+      _noti.showRspErr(rst);
+    }
   }
 
   void showError(String err) {

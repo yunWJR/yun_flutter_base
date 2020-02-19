@@ -10,3 +10,7 @@
 
 * reform file name
 * add alert handle
+
+## 0.0.4   - 2020-02-19
+
+* add YunPageNavigatorOn

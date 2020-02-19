@@ -6,7 +6,6 @@ import 'package:yun_base/config/yun_config.dart';
 import 'package:yun_base/model/yun_base_model.dart';
 import 'package:yun_base/model/yun_rst_data.dart';
 
-
 class YunLog {
   // region common
 
