@@ -94,7 +94,7 @@ class YunRspData<T extends YunBaseModel> {
       // 成功-解析 data
       item.orgData = map[YunRstDataDefine.dataName];
 
-      item.data = YunModelConvert.modelFromMap(item.orgData);
+      item.data = YunModelConvert.modelFromMap(item.orgData, d: d);
     } catch (e) {
       return item._updateError(YunRstDataDefine.commonErrorCode, e.toString(), orgData: e);
     }
@@ -106,7 +106,7 @@ class YunRspData<T extends YunBaseModel> {
     var item = new YunRspData<T>(type: YunRspDataType.BaseModel);
 
     try {
-      item.data = YunModelConvert.modelFromMap(map);
+      item.data = YunModelConvert.modelFromMap(map, d: d);
       item.code = YunRstDataDefine.sucCode;
     } catch (e) {
       return item._updateError(YunRstDataDefine.commonErrorCode, e.toString(), orgData: e);
@@ -140,7 +140,7 @@ class YunRspData<T extends YunBaseModel> {
 
       item.orgData = list;
 
-      item.dataList = list.map<T>((e) => YunModelConvert.modelFromMap(e)).toList();
+      item.dataList = list.map<T>((e) => YunModelConvert.modelFromMap(e, d: d)).toList();
     } catch (e) {
       return item._updateError(YunRstDataDefine.commonErrorCode, e.toString(), orgData: e);
     }
@@ -153,7 +153,7 @@ class YunRspData<T extends YunBaseModel> {
 
     try {
       List list = map as List;
-      List<T> vo = list.map<T>((e) => YunModelConvert.modelFromMap(e)).toList();
+      List<T> vo = list.map<T>((e) => YunModelConvert.modelFromMap(e, d: d)).toList();
 
       item.dataList = vo;
       item.code = YunRstDataDefine.sucCode;
