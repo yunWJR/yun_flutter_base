@@ -82,7 +82,7 @@ class YunLog {
   // region private
 
   static bool _logOff() {
-    return YunConfig.logOn();
+    return !YunConfig.logOn();
   }
 
   static bool _dtErr() {
