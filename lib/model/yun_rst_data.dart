@@ -6,10 +6,16 @@ import 'package:yun_base/config/yun_config.dart';
 import 'package:yun_base/model/yun_base_model.dart';
 import 'package:yun_base/util/yun_value.dart';
 
-/// 数据类型：业务数据;HTTP状态数据;
-enum YunRspDataType { BaseModel, HTTP }
+import 'yun_model_convert.dart';
+
+/// 返回结果包装类型：
+/// Base:rsp即数据
+/// Wrapper:包装数据
+enum YunRspDataWrapperType { Base, Wrapper }
 
 class YunRstDataDefine {
+  static YunRspDataWrapperType wrapperType = YunRspDataWrapperType.Wrapper;
+
   static final codeName = 'code';
   static final dataName = 'data';
   static final msgName = 'errorMsg';
@@ -20,7 +26,7 @@ class YunRstDataDefine {
 
 class YunRspData<T extends YunBaseModel> {
   /// 数据类型
-  YunRspDataType type;
+  YunRspDataWrapperType type;
 
   int code;
   dynamic orgData; // Map<String, dynamic> 或者 list
@@ -29,18 +35,31 @@ class YunRspData<T extends YunBaseModel> {
   T data;
   List<T> dataList;
 
-  YunRspData({this.type: YunRspDataType.BaseModel});
+  YunRspData({this.type: YunRspDataWrapperType.Base});
 
-  factory YunRspData.fromJson(T d, Map<String, dynamic> map, bool rspIsYunBaseModel) {
-    if (rspIsYunBaseModel) {
+  static YunRspDataWrapperType getWrapperType(YunRspDataWrapperType wrapperType) {
+    YunRspDataWrapperType type = YunRstDataDefine.wrapperType;
+    if (wrapperType != null) {
+      type = wrapperType;
+    }
+
+    if (type == null) {
+      throw "转换类型错误";
+    }
+
+    return type;
+  }
+
+  factory YunRspData.fromJson(T d, Map<String, dynamic> map, YunRspDataWrapperType wrapperType) {
+    if (getWrapperType(wrapperType) == YunRspDataWrapperType.Base) {
       return YunRspData.fromJsonByBaseModel(d, map);
     } else {
       return YunRspData.fromJsonByRsp(d, map);
     }
   }
 
-  factory YunRspData.fromListJson(T d, Map<String, dynamic> map, bool rspIsYunBaseModel) {
-    if (rspIsYunBaseModel) {
+  factory YunRspData.fromListJson(T d, Map<String, dynamic> map, YunRspDataWrapperType wrapperType) {
+    if (getWrapperType(wrapperType) == YunRspDataWrapperType.Base) {
       return YunRspData.fromListJsonByBaseModel(d, map);
     } else {
       return YunRspData.fromListJsonByRsp(d, map);
@@ -48,7 +67,7 @@ class YunRspData<T extends YunBaseModel> {
   }
 
   factory YunRspData.fromJsonByRsp(T d, Map<String, dynamic> map) {
-    var item = new YunRspData<T>(type: YunRspDataType.BaseModel);
+    var item = new YunRspData<T>(type: YunRspDataWrapperType.Base);
 
     try {
       if (map[YunRstDataDefine.codeName] == null) {
@@ -70,7 +89,7 @@ class YunRspData<T extends YunBaseModel> {
       // 成功-解析 data
       item.orgData = map[YunRstDataDefine.dataName];
 
-      item.data = d.fromJson(item.orgData);
+      item.data = YunModelConvert.modelFromMap(item.orgData);
     } catch (e) {
       return item._updateError(YunRstDataDefine.commonErrorCode, e.toString(), orgData: e);
     }
@@ -79,10 +98,10 @@ class YunRspData<T extends YunBaseModel> {
   }
 
   factory YunRspData.fromJsonByBaseModel(T d, Map<String, dynamic> map) {
-    var item = new YunRspData<T>(type: YunRspDataType.BaseModel);
+    var item = new YunRspData<T>(type: YunRspDataWrapperType.Base);
 
     try {
-      item.data = d.fromJson(map);
+      item.data = YunModelConvert.modelFromMap(map);
       item.code = YunRstDataDefine.sucCode;
     } catch (e) {
       return item._updateError(YunRstDataDefine.commonErrorCode, e.toString(), orgData: e);
@@ -92,7 +111,7 @@ class YunRspData<T extends YunBaseModel> {
   }
 
   factory YunRspData.fromListJsonByRsp(T d, Map<String, dynamic> map) {
-    var item = new YunRspData<T>(type: YunRspDataType.BaseModel);
+    var item = new YunRspData<T>(type: YunRspDataWrapperType.Base);
 
     try {
       if (map[YunRstDataDefine.codeName] == null) {
@@ -116,7 +135,7 @@ class YunRspData<T extends YunBaseModel> {
 
       item.orgData = list;
 
-      item.dataList = list.map<T>((e) => d.fromJson(e)).toList();
+      item.dataList = list.map<T>((e) => YunModelConvert.modelFromMap(e)).toList();
     } catch (e) {
       return item._updateError(YunRstDataDefine.commonErrorCode, e.toString(), orgData: e);
     }
@@ -125,11 +144,11 @@ class YunRspData<T extends YunBaseModel> {
   }
 
   factory YunRspData.fromListJsonByBaseModel(T d, Map<String, dynamic> map) {
-    var item = new YunRspData<T>(type: YunRspDataType.BaseModel);
+    var item = new YunRspData<T>(type: YunRspDataWrapperType.Base);
 
     try {
       List list = map as List;
-      List<T> vo = list.map<T>((e) => d.fromJson(e)).toList();
+      List<T> vo = list.map<T>((e) => YunModelConvert.modelFromMap(e)).toList();
 
       item.dataList = vo;
       item.code = YunRstDataDefine.sucCode;
@@ -141,7 +160,7 @@ class YunRspData<T extends YunBaseModel> {
   }
 
   factory YunRspData.fromRspError(e) {
-    var item = new YunRspData<T>(type: YunRspDataType.HTTP);
+    var item = new YunRspData<T>(type: YunRspDataWrapperType.Wrapper);
     item.orgData = e;
 
     if (e.response?.statusCode == 401) {
@@ -174,7 +193,7 @@ class YunRspData<T extends YunBaseModel> {
 
   String getErrMsg() {
     if (YunConfig.detailsError()) {
-      String typeStr = type == YunRspDataType.BaseModel ? "业务错误" : "网络错误";
+      String typeStr = type == YunRspDataWrapperType.Base ? "业务错误" : "网络错误";
 
       String err = "${typeStr}:${errorMsg}.\n 源数据：${orgData}";
       return err;

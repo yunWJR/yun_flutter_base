@@ -2,6 +2,7 @@
 // Created by yun on 2020-02-18.
 //
 
+import 'package:dio/dio.dart';
 import 'package:yun_base/config/yun_config.dart';
 import 'package:yun_base/model/yun_base_model.dart';
 import 'package:yun_base/model/yun_rst_data.dart';
@@ -49,6 +50,24 @@ class YunLog {
   // endregion
 
   // region model
+
+  static logRspObj(Response<Map<String, dynamic>> rsp) {
+    if (_logOff()) {
+      return;
+    }
+
+    String d = DateTime.now().toString();
+
+    logDivide("HTTP RQT:" + d, true);
+
+    log("path", rsp.request.method + ":" + rsp.request.path);
+    log("headers", rsp.request.headers);
+    log("params", rsp.request.queryParameters);
+    log("rqt_data", rsp.request.data);
+    log("rsp_data", rsp.data);
+
+    logDivide("HTTP RQT:" + d, false);
+  }
 
   static logRsp(data, {String path, Map<String, dynamic> headers, Map<String, dynamic> qParams}) {
     if (_logOff()) {

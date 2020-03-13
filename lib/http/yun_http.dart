@@ -76,9 +76,8 @@ class YunHttp<N extends YunPageBaseNotiModel> {
 
   /// 封装 post
   Future post<D extends YunBaseModel>(D d, String path, dynamic data, Map<String, dynamic> queryParameters,
-      {bool dIsList = false, bool rspIsYunBaseModel}) async {
-    return postOrg(d, path,
-        data: data, queryParameters: queryParameters, dIsList: dIsList, rspIsYunBaseModel: rspIsYunBaseModel);
+      {bool dIsList = false, YunRspDataWrapperType wrapperType}) async {
+    return postOrg(d, path, data: data, queryParameters: queryParameters, dIsList: dIsList, wrapperType: wrapperType);
   }
 
   /// 原始 post
@@ -90,7 +89,7 @@ class YunHttp<N extends YunPageBaseNotiModel> {
       ProgressCallback onSendProgress,
       ProgressCallback onReceiveProgress,
       bool dIsList = false,
-      bool rspIsYunBaseModel}) async {
+      YunRspDataWrapperType wrapperType}) async {
     Response<Map<String, dynamic>> rsp;
 
     try {
@@ -107,13 +106,13 @@ class YunHttp<N extends YunPageBaseNotiModel> {
       return _handleRspError(e, path, queryParameters);
     }
 
-    return _handleRsp(d, rsp, dIsList, rspIsYunBaseModel);
+    return _handleRsp(d, rsp, dIsList, wrapperType);
   }
 
   /// 封装 get
   Future get<D extends YunBaseModel>(D d, String path, Map<String, dynamic> queryParameters,
-      {bool dIsList = false, bool rspIsYunBaseModel}) async {
-    return getOrg(d, path, queryParameters: queryParameters, dIsList: dIsList, rspIsYunBaseModel: rspIsYunBaseModel);
+      {bool dIsList = false, YunRspDataWrapperType wrapperType}) async {
+    return getOrg(d, path, queryParameters: queryParameters, dIsList: dIsList, wrapperType: wrapperType);
   }
 
   /// 原始 get
@@ -123,7 +122,7 @@ class YunHttp<N extends YunPageBaseNotiModel> {
       CancelToken cancelToken,
       ProgressCallback onReceiveProgress,
       bool dIsList = false,
-      bool rspIsYunBaseModel}) async {
+      YunRspDataWrapperType wrapperType}) async {
     Response<Map<String, dynamic>> rsp;
 
     try {
@@ -138,14 +137,16 @@ class YunHttp<N extends YunPageBaseNotiModel> {
       return _handleRspError(e, path, queryParameters);
     }
 
-    return _handleRsp(d, rsp, dIsList, rspIsYunBaseModel);
+    return _handleRsp(d, rsp, dIsList, wrapperType);
   }
 
   /// 封装 delete
   Future delete<D extends YunBaseModel>(D d, String path,
-      {dynamic data, Map<String, dynamic> queryParameters, bool dIsList = false, bool rspIsYunBaseModel}) async {
-    return deleteOrg(d, path,
-        data: data, queryParameters: queryParameters, dIsList: dIsList, rspIsYunBaseModel: rspIsYunBaseModel);
+      {dynamic data,
+      Map<String, dynamic> queryParameters,
+      bool dIsList = false,
+      YunRspDataWrapperType wrapperType}) async {
+    return deleteOrg(d, path, data: data, queryParameters: queryParameters, dIsList: dIsList, wrapperType: wrapperType);
   }
 
   /// 原始 delete
@@ -155,7 +156,7 @@ class YunHttp<N extends YunPageBaseNotiModel> {
       Options options,
       CancelToken cancelToken,
       bool dIsList = false,
-      bool rspIsYunBaseModel}) async {
+      YunRspDataWrapperType wrapperType}) async {
     Response<Map<String, dynamic>> rsp;
 
     try {
@@ -170,11 +171,11 @@ class YunHttp<N extends YunPageBaseNotiModel> {
       return _handleRspError(e, path, queryParameters);
     }
 
-    return _handleRsp(d, rsp, dIsList, rspIsYunBaseModel);
+    return _handleRsp(d, rsp, dIsList, wrapperType);
   }
 
   dynamic _handleRspError(e, String path, Map<String, dynamic> queryParameters) {
-    // 日志
+    // 日志 todo 更多详情
     YunLog.logRsp(e.toString(), path: path, headers: null, qParams: queryParameters);
 
     rstData = YunRspData.fromRspError(e);
@@ -185,15 +186,13 @@ class YunHttp<N extends YunPageBaseNotiModel> {
   }
 
   dynamic _handleRsp<D extends YunBaseModel>(
-      D d, Response<Map<String, dynamic>> rsp, bool dIsList, bool rspIsYunBaseModel) {
+      D d, Response<Map<String, dynamic>> rsp, bool dIsList, YunRspDataWrapperType wrapperType) {
     if (rsp != null) {
-      YunLog.logRsp(rsp.data,
-          path: rsp.request.path, headers: rsp.request.headers, qParams: rsp.request.queryParameters);
+      YunLog.logRspObj(rsp);
     }
 
-    YunRspData<D> vo = dIsList
-        ? YunRspData.fromListJson(d, rsp.data, rspIsYunBaseModel ?? YunHttp.rspIsYunBaseModel)
-        : YunRspData.fromJson(d, rsp.data, rspIsYunBaseModel ?? YunHttp.rspIsYunBaseModel);
+    YunRspData<D> vo =
+        dIsList ? YunRspData.fromListJson(d, rsp.data, wrapperType) : YunRspData.fromJson(d, rsp.data, wrapperType);
     rstData = vo;
 
     if (rstData.isSuc()) {

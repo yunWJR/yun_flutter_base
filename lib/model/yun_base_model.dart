@@ -6,5 +6,6 @@
 abstract class YunBaseModel {
   Map<String, dynamic> toJson();
 
-  fromJson(Map<String, dynamic> json);
+  /// 可以不实现，但必须实现 ModelFromMapFactory 转换定义
+  fromJson(Map<String, dynamic> json) {}
 }
