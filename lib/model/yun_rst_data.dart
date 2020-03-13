@@ -8,6 +8,11 @@ import 'package:yun_base/util/yun_value.dart';
 
 import 'yun_model_convert.dart';
 
+/// 返回结果类型：
+/// BaseModel: rsp数据
+/// HTTP: HTTP返回状态数据
+enum YunRspDataType { BaseModel, HTTP }
+
 /// 返回结果包装类型：
 /// Base:rsp即数据
 /// Wrapper:包装数据
@@ -26,7 +31,7 @@ class YunRstDataDefine {
 
 class YunRspData<T extends YunBaseModel> {
   /// 数据类型
-  YunRspDataWrapperType type;
+  YunRspDataType type;
 
   int code;
   dynamic orgData; // Map<String, dynamic> 或者 list
@@ -35,7 +40,7 @@ class YunRspData<T extends YunBaseModel> {
   T data;
   List<T> dataList;
 
-  YunRspData({this.type: YunRspDataWrapperType.Base});
+  YunRspData({this.type: YunRspDataType.BaseModel});
 
   static YunRspDataWrapperType getWrapperType(YunRspDataWrapperType wrapperType) {
     YunRspDataWrapperType type = YunRstDataDefine.wrapperType;
@@ -67,7 +72,7 @@ class YunRspData<T extends YunBaseModel> {
   }
 
   factory YunRspData.fromJsonByRsp(T d, Map<String, dynamic> map) {
-    var item = new YunRspData<T>(type: YunRspDataWrapperType.Base);
+    var item = new YunRspData<T>(type: YunRspDataType.BaseModel);
 
     try {
       if (map[YunRstDataDefine.codeName] == null) {
@@ -98,7 +103,7 @@ class YunRspData<T extends YunBaseModel> {
   }
 
   factory YunRspData.fromJsonByBaseModel(T d, Map<String, dynamic> map) {
-    var item = new YunRspData<T>(type: YunRspDataWrapperType.Base);
+    var item = new YunRspData<T>(type: YunRspDataType.BaseModel);
 
     try {
       item.data = YunModelConvert.modelFromMap(map);
@@ -111,7 +116,7 @@ class YunRspData<T extends YunBaseModel> {
   }
 
   factory YunRspData.fromListJsonByRsp(T d, Map<String, dynamic> map) {
-    var item = new YunRspData<T>(type: YunRspDataWrapperType.Base);
+    var item = new YunRspData<T>(type: YunRspDataType.BaseModel);
 
     try {
       if (map[YunRstDataDefine.codeName] == null) {
@@ -144,7 +149,7 @@ class YunRspData<T extends YunBaseModel> {
   }
 
   factory YunRspData.fromListJsonByBaseModel(T d, Map<String, dynamic> map) {
-    var item = new YunRspData<T>(type: YunRspDataWrapperType.Base);
+    var item = new YunRspData<T>(type: YunRspDataType.BaseModel);
 
     try {
       List list = map as List;
@@ -160,12 +165,17 @@ class YunRspData<T extends YunBaseModel> {
   }
 
   factory YunRspData.fromRspError(e) {
-    var item = new YunRspData<T>(type: YunRspDataWrapperType.Wrapper);
+    var item = new YunRspData<T>(type: YunRspDataType.HTTP);
     item.orgData = e;
 
-    if (e.response?.statusCode == 401) {
-      item.code = 401;
-      item.errorMsg = "登录已经过期，请重新登录";
+    if (e.response?.statusCode > 0) {
+      item.code = e.response?.statusCode;
+
+      if (item.code == 401) {
+        item.errorMsg = "登录已经过期，请重新登录";
+      } else {
+        item.errorMsg = e.toString();
+      }
     } else {
       item.code = -1;
       item.errorMsg = e.toString();

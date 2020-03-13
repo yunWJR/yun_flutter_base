@@ -1,8 +1,8 @@
 name: yun_base
-description: flutter base uils for app by yun
-author:
+description: utils for app by yun.
+#author:
 homepage: https://github.com/yunWJR/yun_flutter_base
-version: 0.0.6
+version: 0.0.7
 
 environment:
   sdk: ">=2.3.0 <3.0.0"

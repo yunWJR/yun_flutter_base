@@ -60,6 +60,10 @@ class YunLog {
 
     logDivide("HTTP RQT:" + d, true);
 
+    if (_dtErr()) {
+      log("rsp", rsp.toString());
+    }
+
     log("path", rsp.request.method + ":" + rsp.request.path);
     log("headers", rsp.request.headers);
     log("params", rsp.request.queryParameters);
