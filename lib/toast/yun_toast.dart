@@ -9,14 +9,14 @@ import 'package:fluttertoast/fluttertoast.dart';
 class YunToast {
   static void showToast(
     String text, {
-    gravity: ToastGravity.BOTTOM,
+    gravity: ToastGravity.CENTER,
     toastLength: Toast.LENGTH_LONG,
   }) {
     Fluttertoast.showToast(
       msg: text,
       toastLength: toastLength,
       gravity: gravity,
-      timeInSecForIos: 1,
+      timeInSecForIosWeb: 1,
       backgroundColor: Colors.grey[600],
       fontSize: 16.0,
     );
