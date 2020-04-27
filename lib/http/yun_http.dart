@@ -22,6 +22,9 @@ class YunHttp<N extends YunPageBaseNotiModel> {
   /// 基于N（PageBaseNotiModel）：主动处理状态和信息显示
   static bool handleState = true;
 
+  /// rspObj
+  static bool rspObj = true;
+
   /// 默认header；可以通过方法添加
   static Map<String, dynamic> defHeaders;
 
@@ -57,7 +60,8 @@ class YunHttp<N extends YunPageBaseNotiModel> {
   Dio dio;
   N _noti;
 
-  YunRspData rstData;
+  YunRspData _rstData;
+  bool _dIsList = false;
 
   YunHttp(N noti) {
     this._noti = noti;
@@ -92,6 +96,7 @@ class YunHttp<N extends YunPageBaseNotiModel> {
       bool dIsList = false,
       YunRspDataWrapperType wrapperType}) async {
     Response<Map<String, dynamic>> rsp;
+    _dIsList = dIsList;
 
     try {
       rsp = await dio.post(
@@ -125,6 +130,7 @@ class YunHttp<N extends YunPageBaseNotiModel> {
       bool dIsList = false,
       YunRspDataWrapperType wrapperType}) async {
     Response<Map<String, dynamic>> rsp;
+    _dIsList = dIsList;
 
     try {
       rsp = await dio.get(
@@ -159,6 +165,7 @@ class YunHttp<N extends YunPageBaseNotiModel> {
       bool dIsList = false,
       YunRspDataWrapperType wrapperType}) async {
     Response<Map<String, dynamic>> rsp;
+    _dIsList = dIsList;
 
     try {
       rsp = await dio.delete(
@@ -193,6 +200,7 @@ class YunHttp<N extends YunPageBaseNotiModel> {
       bool dIsList = false,
       YunRspDataWrapperType wrapperType}) async {
     Response<Map<String, dynamic>> rsp;
+    _dIsList = dIsList;
 
     try {
       rsp = await dio.put(
@@ -209,15 +217,15 @@ class YunHttp<N extends YunPageBaseNotiModel> {
     return _handleRsp(d, rsp, dIsList, wrapperType);
   }
 
-  dynamic _handleRspError(e, String path, Map<String, dynamic> queryParameters) {
+  YunRspData<D> _handleRspError<D extends YunBaseModel>(e, String path, Map<String, dynamic> queryParameters) {
     // 日志 todo 更多详情
     YunLog.logRsp(e.toString(), path: path, headers: null, qParams: queryParameters);
 
-    rstData = YunRspData.fromRspError(e);
+    _rstData = YunRspData.fromRspError(e);
 
-    showRspError(rstData);
+    showRspError(_rstData);
 
-    return handleState ? null : rstData;
+    return handleState ? null : _rstData;
   }
 
   YunRspData<D> _handleRsp<D extends YunBaseModel>(
@@ -228,16 +236,16 @@ class YunHttp<N extends YunPageBaseNotiModel> {
 
     YunRspData<D> vo =
         dIsList ? YunRspData.fromListJson(d, rsp.data, wrapperType) : YunRspData.fromJson(d, rsp.data, wrapperType);
-    rstData = vo;
+    _rstData = vo;
 
-    if (rstData.isSuc()) {
+    if (_rstData.isSuc()) {
       hideLoading();
-      return dIsList ? rstData.dataList : rstData.data;
+      return rspObj ? _rstData : rspData();
     }
 
-    showRspError(rstData);
+    showRspError(_rstData);
 
-    return handleState ? null : rstData;
+    return handleState ? null : _rstData;
   }
 
   // endregion
@@ -276,6 +284,10 @@ class YunHttp<N extends YunPageBaseNotiModel> {
     if (_noti != null) {
       _noti.finishLoading();
     }
+  }
+
+  dynamic rspData() {
+    return _dIsList ? _rstData?.dataList : _rstData?.data;
   }
 
 // endregion

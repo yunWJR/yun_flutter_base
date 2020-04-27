@@ -19,6 +19,8 @@ class YunModelConvertDefine {
 
   /// Factory需要实现
   static ModelFromMapFactory factory;
+
+  static YunModelConvertType firstType = YunModelConvertType.Factory;
 }
 
 class YunModelConvert {
@@ -43,28 +45,37 @@ class YunModelConvert {
 
     /// Factory
     if (cType == YunModelConvertType.Factory) {
-      return modelByFactory(map);
+      return modelByFactory(map, true);
     }
 
     /// AUTO
     if (cType == YunModelConvertType.AUTO) {
-      if (d != null) {
-        return d.fromJson(map) as T;
-      }
+      if (YunModelConvertDefine.firstType == YunModelConvertType.Factory) {
+        var rst = modelByFactory(map, false);
+        if (rst == null) {
+          if (d != null) {
+            return d.fromJson(map) as T;
+          }
+        }
+      } else {
+        if (d != null) {
+          return d.fromJson(map) as T;
+        }
 
-      return modelByFactory(map);
+        return modelByFactory(map, true);
+      }
     }
 
     throw "YunModelConvert：转换类型不正确";
   }
 
-  static T modelByFactory<T>(Map<String, dynamic> map) {
+  static T modelByFactory<T>(Map<String, dynamic> map, bool err) {
     T rst;
     if (YunModelConvertDefine.factory != null) {
       rst = YunModelConvertDefine.factory(map) as T;
     }
 
-    if (rst == null) {
+    if (rst == null && err) {
       // 异常
       throw "对象${T.toString()} 转换失败";
     }
