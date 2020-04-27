@@ -75,13 +75,14 @@ class YunHttp<N extends YunPageBaseNotiModel> {
   // region rqt
 
   /// 封装 post
-  Future post<D extends YunBaseModel>(D d, String path, dynamic data, Map<String, dynamic> queryParameters,
+  Future<YunRspData<D>> post<D extends YunBaseModel>(
+      D d, String path, dynamic data, Map<String, dynamic> queryParameters,
       {bool dIsList = false, YunRspDataWrapperType wrapperType}) async {
     return postOrg(d, path, data: data, queryParameters: queryParameters, dIsList: dIsList, wrapperType: wrapperType);
   }
 
   /// 原始 post
-  Future postOrg<D extends YunBaseModel>(D d, String path,
+  Future<YunRspData<D>> postOrg<D extends YunBaseModel>(D d, String path,
       {dynamic data,
       Map<String, dynamic> queryParameters,
       Options options,
@@ -110,13 +111,13 @@ class YunHttp<N extends YunPageBaseNotiModel> {
   }
 
   /// 封装 get
-  Future get<D extends YunBaseModel>(D d, String path, Map<String, dynamic> queryParameters,
+  Future<YunRspData<D>> get<D extends YunBaseModel>(D d, String path, Map<String, dynamic> queryParameters,
       {bool dIsList = false, YunRspDataWrapperType wrapperType}) async {
     return getOrg(d, path, queryParameters: queryParameters, dIsList: dIsList, wrapperType: wrapperType);
   }
 
   /// 原始 get
-  Future getOrg<D extends YunBaseModel>(D d, String path,
+  Future<YunRspData<D>> getOrg<D extends YunBaseModel>(D d, String path,
       {Map<String, dynamic> queryParameters,
       Options options,
       CancelToken cancelToken,
@@ -141,7 +142,7 @@ class YunHttp<N extends YunPageBaseNotiModel> {
   }
 
   /// 封装 delete
-  Future delete<D extends YunBaseModel>(D d, String path,
+  Future<YunRspData<D>> delete<D extends YunBaseModel>(D d, String path,
       {dynamic data,
       Map<String, dynamic> queryParameters,
       bool dIsList = false,
@@ -150,7 +151,7 @@ class YunHttp<N extends YunPageBaseNotiModel> {
   }
 
   /// 原始 delete
-  Future deleteOrg<D extends YunBaseModel>(D d, String path,
+  Future<YunRspData<D>> deleteOrg<D extends YunBaseModel>(D d, String path,
       {dynamic data,
       Map<String, dynamic> queryParameters,
       Options options,
@@ -161,6 +162,40 @@ class YunHttp<N extends YunPageBaseNotiModel> {
 
     try {
       rsp = await dio.delete(
+        path,
+        data: data,
+        queryParameters: queryParameters,
+        options: options,
+        cancelToken: cancelToken,
+      );
+    } catch (e) {
+      return _handleRspError(e, path, queryParameters);
+    }
+
+    return _handleRsp(d, rsp, dIsList, wrapperType);
+  }
+
+  /// 封装 put
+  Future<YunRspData<D>> put<D extends YunBaseModel>(D d, String path,
+      {dynamic data,
+      Map<String, dynamic> queryParameters,
+      bool dIsList = false,
+      YunRspDataWrapperType wrapperType}) async {
+    return putOrg(d, path, data: data, queryParameters: queryParameters, dIsList: dIsList, wrapperType: wrapperType);
+  }
+
+  /// 原始 put
+  Future<YunRspData<D>> putOrg<D extends YunBaseModel>(D d, String path,
+      {dynamic data,
+      Map<String, dynamic> queryParameters,
+      Options options,
+      CancelToken cancelToken,
+      bool dIsList = false,
+      YunRspDataWrapperType wrapperType}) async {
+    Response<Map<String, dynamic>> rsp;
+
+    try {
+      rsp = await dio.put(
         path,
         data: data,
         queryParameters: queryParameters,
@@ -185,7 +220,7 @@ class YunHttp<N extends YunPageBaseNotiModel> {
     return handleState ? null : rstData;
   }
 
-  dynamic _handleRsp<D extends YunBaseModel>(
+  YunRspData<D> _handleRsp<D extends YunBaseModel>(
       D d, Response<Map<String, dynamic>> rsp, bool dIsList, YunRspDataWrapperType wrapperType) {
     if (rsp != null) {
       YunLog.logRspObj(rsp);
@@ -244,5 +279,4 @@ class YunHttp<N extends YunPageBaseNotiModel> {
   }
 
 // endregion
-
 }
