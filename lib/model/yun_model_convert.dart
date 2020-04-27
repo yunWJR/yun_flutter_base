@@ -11,7 +11,7 @@ import 'yun_base_model.dart';
 enum YunModelConvertType { BaseModel, Factory, AUTO }
 
 /// 工厂转换模式
-typedef T ModelFromMapFactory<T extends YunBaseModel>(Map<String, dynamic> json);
+typedef T ModelFromMapFactory<T extends YunBaseModel>(String type, Map<String, dynamic> json);
 
 class YunModelConvertDefine {
   /// 默认 AUTO
@@ -51,15 +51,20 @@ class YunModelConvert {
     /// AUTO
     if (cType == YunModelConvertType.AUTO) {
       if (YunModelConvertDefine.firstType == YunModelConvertType.Factory) {
-        var rst = modelByFactory(map, false);
-        if (rst == null) {
-          if (d != null) {
-            return d.fromJson(map) as T;
-          }
+        T rst = modelByFactory(map, false);
+        if (rst != null) {
+          return rst;
+        }
+
+        if (d != null) {
+          return d.fromJson(map) as T;
         }
       } else {
         if (d != null) {
-          return d.fromJson(map) as T;
+          T rst = d.fromJson(map) as T;
+          if (rst != null) {
+            return rst;
+          }
         }
 
         return modelByFactory(map, true);
@@ -72,7 +77,7 @@ class YunModelConvert {
   static T modelByFactory<T>(Map<String, dynamic> map, bool err) {
     T rst;
     if (YunModelConvertDefine.factory != null) {
-      rst = YunModelConvertDefine.factory(map) as T;
+      rst = YunModelConvertDefine.factory(T.toString(), map) as T;
     }
 
     if (rst == null && err) {

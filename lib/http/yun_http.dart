@@ -221,7 +221,7 @@ class YunHttp<N extends YunPageBaseNotiModel> {
     // 日志 todo 更多详情
     YunLog.logRsp(e.toString(), path: path, headers: null, qParams: queryParameters);
 
-    _rstData = YunRspData.fromRspError(e);
+    _rstData = YunRspData<D>.fromRspError(e);
 
     showRspError(_rstData);
 
@@ -235,7 +235,7 @@ class YunHttp<N extends YunPageBaseNotiModel> {
     }
 
     YunRspData<D> vo =
-        dIsList ? YunRspData.fromListJson(d, rsp.data, wrapperType) : YunRspData.fromJson(d, rsp.data, wrapperType);
+        dIsList ? YunRspData<D>.fromListJson(d, rsp.data, wrapperType) : YunRspData<D>.fromJson(d, rsp.data, wrapperType);
     _rstData = vo;
 
     if (_rstData.isSuc()) {

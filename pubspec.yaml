@@ -2,7 +2,7 @@ name: yun_base
 description: utils for app by yun.
 #author:
 homepage: https://github.com/yunWJR/yun_flutter_base
-version: 0.0.10
+version: 0.0.11
 
 environment:
   sdk: ">=2.3.0 <3.0.0"

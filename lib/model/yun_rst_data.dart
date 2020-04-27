@@ -57,22 +57,22 @@ class YunRspData<T extends YunBaseModel> {
 
   factory YunRspData.fromJson(T d, Map<String, dynamic> map, YunRspDataWrapperType wrapperType) {
     if (getWrapperType(wrapperType) == YunRspDataWrapperType.Base) {
-      return YunRspData.fromJsonByBaseModel(d, map);
+      return YunRspData<T>.fromJsonByBaseModel(d, map);
     } else {
-      return YunRspData.fromJsonByRsp(d, map);
+      return YunRspData<T>.fromJsonByRsp(d, map);
     }
   }
 
   factory YunRspData.fromListJson(T d, Map<String, dynamic> map, YunRspDataWrapperType wrapperType) {
     if (getWrapperType(wrapperType) == YunRspDataWrapperType.Base) {
-      return YunRspData.fromListJsonByBaseModel(d, map);
+      return YunRspData<T>.fromListJsonByBaseModel(d, map);
     } else {
-      return YunRspData.fromListJsonByRsp(d, map);
+      return YunRspData<T>.fromListJsonByRsp(d, map);
     }
   }
 
   factory YunRspData.fromJsonByRsp(T d, Map<String, dynamic> map) {
-    var item = new YunRspData<T>(type: YunRspDataType.BaseModel);
+    YunRspData<T> item = new YunRspData<T>(type: YunRspDataType.BaseModel);
 
     try {
       if (map[YunRstDataDefine.codeName] == null) {
@@ -103,7 +103,7 @@ class YunRspData<T extends YunBaseModel> {
   }
 
   factory YunRspData.fromJsonByBaseModel(T d, Map<String, dynamic> map) {
-    var item = new YunRspData<T>(type: YunRspDataType.BaseModel);
+    YunRspData<T> item = new YunRspData<T>(type: YunRspDataType.BaseModel);
 
     try {
       item.data = YunModelConvert.modelFromMap(map, d: d);
@@ -116,7 +116,7 @@ class YunRspData<T extends YunBaseModel> {
   }
 
   factory YunRspData.fromListJsonByRsp(T d, Map<String, dynamic> map) {
-    var item = new YunRspData<T>(type: YunRspDataType.BaseModel);
+    YunRspData<T> item = new YunRspData<T>(type: YunRspDataType.BaseModel);
 
     try {
       if (map[YunRstDataDefine.codeName] == null) {
@@ -149,7 +149,7 @@ class YunRspData<T extends YunBaseModel> {
   }
 
   factory YunRspData.fromListJsonByBaseModel(T d, Map<String, dynamic> map) {
-    var item = new YunRspData<T>(type: YunRspDataType.BaseModel);
+    YunRspData<T> item = new YunRspData<T>(type: YunRspDataType.BaseModel);
 
     try {
       List list = map as List;
