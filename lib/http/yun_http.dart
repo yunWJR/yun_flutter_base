@@ -234,8 +234,9 @@ class YunHttp<N extends YunPageBaseNotiModel> {
       YunLog.logRspObj(rsp);
     }
 
-    YunRspData<D> vo =
-        dIsList ? YunRspData<D>.fromListJson(d, rsp.data, wrapperType) : YunRspData<D>.fromJson(d, rsp.data, wrapperType);
+    YunRspData<D> vo = dIsList
+        ? YunRspData<D>.fromListJson(d, rsp.data, wrapperType)
+        : YunRspData<D>.fromJson(d, rsp.data, wrapperType);
     _rstData = vo;
 
     if (_rstData.isSuc()) {
