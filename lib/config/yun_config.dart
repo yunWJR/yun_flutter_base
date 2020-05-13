@@ -2,7 +2,7 @@
 // Created by yun on 2020-02-18.
 //
 
-import 'dart:io';
+import 'package:universal_platform/universal_platform.dart';
 
 /// 主题模式：0-根据系统判断；1-全部 iOS；2-全部 Material
 enum YunThemeMode { AUTO, IOS, MATERIAL }
@@ -45,7 +45,7 @@ class YunConfig {
   /// 使用 iOS 模式
   static bool iOSMode() {
     if (themeMode == YunThemeMode.AUTO) {
-      return Platform.isIOS;
+      return UniversalPlatform.isIOS;
     }
 
     return themeMode == YunThemeMode.IOS;
@@ -54,7 +54,7 @@ class YunConfig {
   /// 使用 MATERIAL 模式
   static bool materialMode() {
     if (themeMode == YunThemeMode.AUTO) {
-      return Platform.isAndroid;
+      return UniversalPlatform.isAndroid;
     }
 
     return themeMode == YunThemeMode.MATERIAL;
