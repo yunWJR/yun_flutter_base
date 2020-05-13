@@ -21,12 +21,12 @@ enum YunRspDataWrapperType { Base, Wrapper }
 class YunRstDataDefine {
   static YunRspDataWrapperType wrapperType = YunRspDataWrapperType.Wrapper;
 
-  static final codeName = 'code';
-  static final dataName = 'data';
-  static final msgName = 'errorMsg';
+  static String codeName = 'code';
+  static String dataName = 'data';
+  static String msgName = 'errorMsg';
 
-  static final int sucCode = 200;
-  static final int commonErrorCode = -1;
+  static int sucCode = 200;
+  static int commonErrorCode = -1;
 }
 
 class YunRspData<T extends YunBaseModel> {
