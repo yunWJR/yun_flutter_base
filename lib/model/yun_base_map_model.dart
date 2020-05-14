@@ -10,6 +10,10 @@ class YunBaseMapModel implements YunBaseModel {
 
   YunBaseMapModel({this.json});
 
+  factory YunBaseMapModel.fromJson(Map<String, dynamic> json) {
+    return YunBaseMapModel(json: json);
+  }
+
   YunBaseMapModel fromJson(Map<String, dynamic> json) {
     return YunBaseMapModel(
       json: json,

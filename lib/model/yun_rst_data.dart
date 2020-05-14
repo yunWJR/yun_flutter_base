@@ -21,12 +21,12 @@ enum YunRspDataWrapperType { Base, Wrapper }
 class YunRstDataDefine {
   static YunRspDataWrapperType wrapperType = YunRspDataWrapperType.Wrapper;
 
-  static final codeName = 'code';
-  static final dataName = 'data';
-  static final msgName = 'errorMsg';
+  static String codeName = 'code';
+  static String dataName = 'data';
+  static String msgName = 'errorMsg';
 
-  static final int sucCode = 200;
-  static final int commonErrorCode = -1;
+  static int sucCode = 200;
+  static int commonErrorCode = -1;
 }
 
 class YunRspData<T extends YunBaseModel> {
@@ -94,7 +94,12 @@ class YunRspData<T extends YunBaseModel> {
       // 成功-解析 data
       item.orgData = map[YunRstDataDefine.dataName];
 
-      item.data = YunModelConvert.modelFromMap(item.orgData, d: d);
+      // 原始数据
+      if (item.type.toString() == "YunRspDataType.YunBaseObjModel") {
+        item.data = item.orgData;
+      } else {
+        item.data = YunModelConvert.modelFromMap(item.orgData, d: d);
+      }
     } catch (e) {
       return item._updateError(YunRstDataDefine.commonErrorCode, e.toString(), orgData: e);
     }
@@ -140,7 +145,13 @@ class YunRspData<T extends YunBaseModel> {
 
       item.orgData = list;
 
-      item.dataList = list.map<T>((e) => YunModelConvert.modelFromMap(e, d: d)).toList();
+      // 原始数据
+      if (item.type.toString() == "YunRspDataType.YunBaseObjModel") {
+        item.data = item.orgData;
+        item.dataList = item.orgData;
+      } else {
+        item.dataList = list.map<T>((e) => YunModelConvert.modelFromMap(e, d: d)).toList();
+      }
     } catch (e) {
       return item._updateError(YunRstDataDefine.commonErrorCode, e.toString(), orgData: e);
     }
