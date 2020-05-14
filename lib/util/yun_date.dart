@@ -21,6 +21,19 @@ class YunDate {
     return null;
   }
 
+  static DateTime ymdHmsDateOfYms(DateTime ymdDt) {
+    if (ymdDt != null) {
+      return DateTime.now();
+    }
+
+    String y = YunDate.ymdStr(ymdDt);
+    String t = YunDate.hmsStr(DateTime.now());
+
+    DateTime date = YunDate.ymdHmsDate(y + " " + t);
+    
+    return date;
+  }
+
   static String ymdStr(DateTime dateTime) {
     if (dateTime != null) {
       return ymdDf().format(dateTime);
